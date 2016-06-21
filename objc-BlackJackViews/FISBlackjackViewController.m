@@ -32,12 +32,23 @@
     [self.game.deck resetDeck];
     [self.game.deck shuffleRemainingCards];
     [self.game dealNewRound];
+    
+    [self newGameHideCardsAndLabels];
 
     //self.winnerLabel.text = @"Hit or Stay?";
     
     [self updateCardsAndScoreOnTable];
     
-    if (self.game.player.blackjack) {
+    self.houseScoreLabel.hidden = false;
+    self.playerScoreLabel.hidden = false;
+    
+    if ([self.game.player.cardsInHand count] == 5) {
+        self.playerBlackjackLabel.hidden = false;               //player wins 5 card Charlie
+        self.didHouseWin = false;
+        [self gameOverEnableButtonsUpdateScores];
+        self.winnerLabel.hidden = false;
+        self.winnerLabel.text = @"You Win!";
+    }else if (self.game.player.blackjack) {
         self.playerBlackjackLabel.hidden = false;               //player wins
         self.didHouseWin = false;
         [self gameOverEnableButtonsUpdateScores];
@@ -49,14 +60,12 @@
         [self gameOverEnableButtonsUpdateScores];
         self.winnerLabel.hidden = false;
         self.winnerLabel.text = @"You Lose!";
-    }
+    } else {
     
     self.playerHitButton.enabled = true;
     self.playerStayButton.enabled = true;
     self.dealButton.enabled = false;
-    
-    self.houseScoreLabel.hidden = false;
-    self.playerScoreLabel.hidden = false;
+    }
 }
 
 - (IBAction)hitButton:(id)sender {
@@ -80,7 +89,11 @@
     self.playerStayButton.enabled = false;
     self.winnerLabel.hidden = false;
     
+
     [self.game processHouseTurn];
+    [self.game processHouseTurn];
+    [self.game processHouseTurn];
+    
     
     [self updateCardsAndScoreOnTable];
     
